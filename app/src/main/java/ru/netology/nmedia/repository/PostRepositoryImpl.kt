@@ -39,6 +39,7 @@ class PostRepositoryImpl : PostRepository {
 
                     if (!response.isSuccessful) {
                         callback.onError(RuntimeException(responseBody))
+                        return
                     }
                     try {
                         callback.onSuccess(gson.fromJson(responseBody, typeToken.type))
@@ -74,6 +75,7 @@ class PostRepositoryImpl : PostRepository {
 
                     if (!response.isSuccessful) {
                         callback.onError(RuntimeException(responseBody))
+                        return
                     }
                     try {
                         callback.onSuccess(gson.fromJson(responseBody, typeTokenPost.type))
@@ -102,6 +104,7 @@ class PostRepositoryImpl : PostRepository {
 
                     if (!response.isSuccessful) {
                         callback.onError(RuntimeException(responseBody))
+                        return
                     }
                     try {
                         callback.onSuccess(gson.fromJson(responseBody, typeTokenPost.type))
@@ -116,7 +119,7 @@ class PostRepositoryImpl : PostRepository {
             })
     }
 
-    override fun removeByIdAsync(id: Long, callback: PostRepository.GetResultCallback<Post>) {
+    override fun removeByIdAsync(id: Long, callback: PostRepository.GetResultCallback<Unit?>) {
         val request: Request = Request.Builder()
             .delete()
             .url("${BASE_URL}/api/posts/$id")
@@ -129,6 +132,7 @@ class PostRepositoryImpl : PostRepository {
 
                     if (!response.isSuccessful) {
                         callback.onError(RuntimeException(responseBody))
+                        return
                     }
                     try {
                         callback.onSuccess(gson.fromJson(responseBody, typeTokenPost.type))
