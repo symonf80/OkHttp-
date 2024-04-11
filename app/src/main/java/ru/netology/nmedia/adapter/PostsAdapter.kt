@@ -1,14 +1,17 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.repository.PostRepositoryImpl.Companion.BASE_URL
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -41,9 +44,29 @@ class PostViewHolder(
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            // в адаптере
             like.isChecked = post.likedByMe
             like.text = "${post.likes}"
+
+            if (!post.attachment?.url.isNullOrBlank()) {
+                ivAttachment.visibility = View.VISIBLE
+            } else {
+                ivAttachment.visibility = View.GONE
+            }
+
+            val urlAvatar = "${BASE_URL}/avatars/${post.authorAvatar}"
+            Glide.with(avatar)
+                .load(urlAvatar)
+                .circleCrop()
+                .placeholder(R.drawable.baseline_downloading_24)
+                .error(R.drawable.baseline_error_24)
+                .timeout(10_000)
+                .into(avatar)
+
+            val urlAttachment = "${BASE_URL}/images/${post.attachment?.url}"
+            Glide.with(ivAttachment)
+                .load(urlAttachment)
+                .timeout(10_000)
+                .into(ivAttachment)
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
@@ -54,6 +77,7 @@ class PostViewHolder(
                                 onInteractionListener.onRemove(post)
                                 true
                             }
+
                             R.id.edit -> {
                                 onInteractionListener.onEdit(post)
                                 true

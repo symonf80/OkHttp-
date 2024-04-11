@@ -23,14 +23,14 @@ class PostRepositoryImpl : PostRepository {
     private val typeTokenPost = object : TypeToken<Post>() {}
 
     companion object {
-        private const val BASE_URL = "http://10.0.2.2:9999"
+         const val BASE_URL = "http://10.0.2.2:9999"
         private val jsonType = "application/json".toMediaType()
     }
 
 
     override fun getAllAsync(callback: PostRepository.GetResultCallback<List<Post>>) {
         val request: Request = Request.Builder()
-            .url("${BASE_URL}/api/slow/posts")
+            .url("${BASE_URL}/api/posts")
             .build()
         client.newCall(request)
             .enqueue(object : Callback {
@@ -98,13 +98,13 @@ class PostRepositoryImpl : PostRepository {
         client.newCall(request)
             .enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
-                    val responseBody = response.body?.string()
-
+                    val body = response.body?.string()
                     if (!response.isSuccessful) {
-                        callback.onError(RuntimeException(responseBody))
+                        callback.onError(RuntimeException(body))
+                        return
                     }
                     try {
-                        callback.onSuccess(gson.fromJson(responseBody, typeTokenPost.type))
+                        callback.onSuccess(gson.fromJson(body, typeTokenPost.type))
                     } catch (e: Exception) {
                         callback.onError(e)
                     }
@@ -116,7 +116,7 @@ class PostRepositoryImpl : PostRepository {
             })
     }
 
-    override fun removeByIdAsync(id: Long, callback: PostRepository.GetResultCallback<Post>) {
+    override fun removeByIdAsync(id: Long, callback: PostRepository.GetResultCallback<Unit?>) {
         val request: Request = Request.Builder()
             .delete()
             .url("${BASE_URL}/api/posts/$id")
@@ -129,9 +129,10 @@ class PostRepositoryImpl : PostRepository {
 
                     if (!response.isSuccessful) {
                         callback.onError(RuntimeException(responseBody))
+                        return
                     }
                     try {
-                        callback.onSuccess(gson.fromJson(responseBody, typeTokenPost.type))
+                        callback.onSuccess(gson.fromJson(responseBody, typeToken.type))
                     } catch (e: Exception) {
                         callback.onError(e)
                     }
