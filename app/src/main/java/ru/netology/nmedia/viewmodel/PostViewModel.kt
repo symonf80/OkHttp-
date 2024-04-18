@@ -40,7 +40,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _data.postValue(FeedModel(posts = result, empty = result.isEmpty()))
             }
 
-            override fun onError(e: Exception) {
+            override fun onError(e: Throwable) {
                 _data.postValue(FeedModel(error = true))
             }
         })
@@ -49,8 +49,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun save() {
         edited.value?.let { post ->
             repository.saveAsync(post, object : PostRepository.GetResultCallback<Post> {
-                override fun onError(e: Exception) {
+                override fun onError(e: Throwable) {
                     _postCreated.postValue(Unit)
+                    _data.postValue(FeedModel(error = true))
                 }
 
                 override fun onSuccess(result: Post) {
@@ -82,7 +83,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun likeById(post: Post) {
         repository.likeByIdAsync(post, object : PostRepository.GetResultCallback<Post> {
-            override fun onError(e: Exception) {
+            override fun onError(e: Throwable) {
                 _data.postValue(FeedModel(error = true))
             }
 
@@ -99,8 +100,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun removeById(id: Long) {
         repository.removeByIdAsync(id, object : PostRepository.GetResultCallback<Unit?> {
-            override fun onError(e: Exception) {
+            override fun onError(e: Throwable) {
                 _data.postValue(_data.value?.copy(posts = _data.value?.posts.orEmpty()))
+                _data.postValue(FeedModel(error = true))
 
             }
 
