@@ -13,12 +13,6 @@ import java.io.IOException
 class PostRepositoryImpl : PostRepository {
 
 
-    companion object {
-        const val BASE_URL = "http://10.0.2.2:9999"
-
-    }
-
-
     override fun getAllAsync(callback: PostRepository.GetResultCallback<List<Post>>) {
         PostsApi.retrofitService.getAll().enqueue(object : Callback<List<Post>> {
             override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {

@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.repository.PostRepositoryImpl.Companion.BASE_URL
+
 
 
 interface OnInteractionListener {
@@ -54,7 +55,7 @@ class PostViewHolder(
                 ivAttachment.visibility = View.GONE
             }
 
-            val urlAvatar = "${BASE_URL}/avatars/${post.authorAvatar}"
+            val urlAvatar = "${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}"
             Glide.with(avatar)
                 .load(urlAvatar)
                 .circleCrop()
@@ -63,7 +64,7 @@ class PostViewHolder(
                 .timeout(10_000)
                 .into(avatar)
 
-            val urlAttachment = "${BASE_URL}/images/${post.attachment?.url}"
+            val urlAttachment = "${BuildConfig.BASE_URL}/images/${post.attachment?.url}"
             Glide.with(ivAttachment)
                 .load(urlAttachment)
                 .timeout(10_000)
