@@ -1,7 +1,9 @@
 package ru.netology.nmedia.viewmodel
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.*
+import ru.netology.nmedia.R
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.*
@@ -84,7 +86,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun likeById(post: Post) {
         repository.likeByIdAsync(post, object : PostRepository.GetResultCallback<Post> {
             override fun onError(e: Throwable) {
-                _data.postValue(FeedModel(error = true))
+                Toast.makeText(getApplication(), R.string.error_server, Toast.LENGTH_SHORT).show()
             }
 
             override fun onSuccess(result: Post) {
@@ -102,7 +104,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         repository.removeByIdAsync(id, object : PostRepository.GetResultCallback<Unit?> {
             override fun onError(e: Throwable) {
                 _data.postValue(_data.value?.copy(posts = _data.value?.posts.orEmpty()))
-                _data.postValue(FeedModel(error = true))
+                Toast.makeText(getApplication(), R.string.error_server, Toast.LENGTH_SHORT).show()
 
             }
 
@@ -110,6 +112,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 _data.postValue(
                     _data.value?.copy(posts = _data.value?.posts.orEmpty()
                         .filter { it.id != id })
+
                 )
 
             }
