@@ -1,2 +1,2 @@
-## Многопоточность в Android
-### Glide,Rounded,Attachments
+## Retrofit (CRUD)
+### Buggy Server
